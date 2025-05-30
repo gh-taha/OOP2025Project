@@ -3,3 +3,18 @@
 //
 
 #include "Controller.h"
+
+static void commandLine()
+{
+    string command;
+
+    while(true)
+    {
+        getline(cin, command);
+
+
+
+    }
+
+
+}

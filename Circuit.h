@@ -19,6 +19,13 @@ protected:
 public:
     static unsigned circuitID;
 
+    void analysCircuit();
+    void saveCircuit();
+    static void readCircuit();
+    static void printCircuit();
+
+
+
 
 };
 

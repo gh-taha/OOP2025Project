@@ -5,8 +5,13 @@
 #ifndef PROJECTCODE_CONTROLLER_H
 #define PROJECTCODE_CONTROLLER_H
 
+#include "header.h"
 
 class Controller {
+
+public:
+    static void commandLine();
+
 
 };
 
