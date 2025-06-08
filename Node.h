@@ -9,10 +9,13 @@
 class Node{
 
 private:
+//    vector<Element*> N1s;
+//    vector<Element*> N2s;
 
     unsigned ID;
 
 public:
+    Node(const string& n);
 
     static unsigned int nodeID;
 

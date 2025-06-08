@@ -17,15 +17,20 @@ public:
 
     void commandRun();
 
-    void addResistor(string n, string n1, string n2, string v);
+    void addResistor(const string& n, const string& n1, const string& n2, const string& v);
     void deleteResistor(const string& n);
 
+    void addCapacitor(const string& n, const string& n1, const string& n2, const string& v);
+    void deleteCapacitor(const string& n);
 
-    void addCapacitor(string n, string n1, string n2, string v);
     void addInductor(string n, string n1, string n2, string v);
-    void addDiode(string n, string n1, string n2, string v);
+    void deleteInductor(const string& n);
 
 
+
+    void showNodes();
+
+    bool isElement(const string& t, const string& n);
     Element* findElement(const string& t, const string& n);
 
 

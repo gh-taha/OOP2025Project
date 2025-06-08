@@ -5,10 +5,12 @@
 #include "header.h"
 #include "Controller.h"
 #include "Resistor.h"
+#include "ElementException.h"
 
 Controller::Controller()
 {
     currentCircuit = new Circuit;
+//    cout<<currentCircuit;
 }
 
 
@@ -46,6 +48,11 @@ void Controller::commandRun()
 
     //==========delete_patterns===========
     regex deleteResistor_pattern(R"(^\s*delete\s+R([A-Za-z0-9_]+)\s*$)");
+    regex deleteCapacitor_pattern(R"(^\s*delete\s+C([A-Za-z0-9_]+)\s*$)");
+    regex deleteInductor_pattern (R"(^\s*delete\s+L([A-Za-z0-9_]+)\s*$)");
+
+    //========== ==========
+    regex showNodes_pattern(R"(^\s*\.nodes\s*$)");
 
 
     //==========exit_patterns=========
@@ -57,80 +64,204 @@ void Controller::commandRun()
 
 
     string command;
-    while(true)
-    {
+    while(true) {
+
         getline(cin, command);
-        // add resistor
-        if (regex_match(command, match, addResistor_pattern))
+
+        try
         {
-            addResistor(match[1], match[2], match[3], match[4]);
+            // add resistor
+            if (regex_match(command, match, addResistor_pattern))
+            {
+                addResistor(match[1], match[2], match[3], match[4]);
+            }
+            //delete resistor
+            else if (regex_match(command, match, deleteResistor_pattern))
+            {
+                deleteResistor(match[1]);
+            }
+
+            // add capacitor
+            else if (regex_match(command, match, addCapacitor_pattern))
+            {
+                addCapacitor(match[1], match[2], match[3], match[4]);
+            }
+            // delete capacitor
+            else if(regex_match(command, match, deleteCapacitor_pattern))
+            {
+                deleteCapacitor(match[1]);
+            }
+
+            // add Inductor
+            else if (regex_match(command, match, addInductor_pattern))
+            {
+                addInductor(match[1], match[2], match[3], match[4]);
+            }
+            // delete inductor
+            else if (regex_match(command, match, deleteInductor_pattern))
+            {
+                deleteInductor(match[1]);
+            }
+            else if (regex_match(command, match, showNodes_pattern))
+            {
+                showNodes();
+            }
+            else if (regex_match(command, exit_pattern))
+            {
+                break;
+            }
+            else if (command.find("t") != string::npos)
+            {
+                //cout<<currentCircuit->elements[currentCircuit->elements.size()-1]->getName()<<endl;
+//                cout<<currentCircuit<<"\n";
+            }
+            else {
+                cout << "syntax error\n"<<command<<endl;
+            }
         }
-        //delete resistor
-        else if (regex_match(command, match, deleteResistor_pattern))
+        catch (const ElementException& e)
         {
-            deleteResistor(match[1]);
+            cerr << e.what()<<endl;
         }
-
-
-
-
-
-        else if (regex_match(command, match, addCapacitor_pattern))
+        catch (ValueException& e)
         {
-            addCapacitor(match[1], match[2], match[3], match[4]);
-        } else if (regex_match(command, match, addInductor_pattern))
-        {
-            addInductor(match[1], match[2], match[3], match[4]);
+            cerr << e.what()<<endl;
         }
-        else if (regex_match(command, exit_pattern))
+    }
+
+}
+
+
+void Controller::addResistor(const std::string& n, const std::string& n1, const std::string& n2, const std::string& v)
+{
+    long double V = parseValue(v);
+    if(V <= 0)
+        throw ValueException("Resistance cannot be zero or negative");
+    if(isElement("resistor", n))
+        throw ElementException("Resistor " + n + " already exists in the circuit");
+
+    Node *N1 = parseNode(n1);
+//    cout<<N1<<"\n";
+    Node *N2 = parseNode(n2);
+//    cout<<N2<<"\n";
+
+    auto *add = new Resistor("resistor", n, N1, N2, V);
+    currentCircuit->elements.push_back(add);
+
+}
+
+void Controller::deleteResistor(const std::string& n)
+{
+    if (!isElement("resistor", n))
+    {
+        throw ElementException("Cannot delete resistor; component not found");
+    }
+    else
+    {
+        int i;
+        for (i = 0; i < currentCircuit->elements.size(); ++i)
         {
-            break;
-        }
-        else
-        {
-            cout<<"syntax error\n";
+            if (currentCircuit->elements[i]->getType() == "resistor" && currentCircuit->elements[i]->getName() == n)
+            {
+                delete currentCircuit->elements[i];
+                currentCircuit->elements.erase(currentCircuit->elements.begin() + i);
+            }
         }
     }
 }
 
 
-void Controller::addResistor(std::string n, std::string n1, std::string n2, std::string v)
+void Controller::addCapacitor(const string& n, const string& n1, const string& n2, const string& v)
 {
+    long double V = parseValue(v);
+    if(V <= 0)
+        throw ValueException("Capacitance cannot be zero or negative");
+    if(isElement("resistor", n))
+        throw ElementException("Capacitor " + n + " already exists in the circuit");
 
-    Node* N1 = parseNode(n1);
-    Node* N2 = parseNode(n2);
-    Resistor* adding= new Resistor("resistor", n, N1, N2, parseValue(v));
-    currentCircuit->elements.push_back(adding);
+    Node *N1 = parseNode(n1);
+//    cout<<N1<<"\n";
+    Node *N2 = parseNode(n2);
+//    cout<<N2<<"\n";
+
+    auto *add = new Resistor("capacitor", n, N1, N2, V);
+    currentCircuit->elements.push_back(add);
+
 }
 
-void Controller::deleteResistor(const std::string& n) {
-
+void Controller::deleteCapacitor(const string& n)
+{
+    if (!isElement("capacitor", n))
+    {
+        throw ElementException("Cannot delete capacitor; component not found");
+    }
+    else
+    {
+        int i;
+        for (i = 0; i < currentCircuit->elements.size(); ++i)
+        {
+            if (currentCircuit->elements[i]->getType() == "capacitor" && currentCircuit->elements[i]->getName() == n)
+            {
+                delete currentCircuit->elements[i];
+                currentCircuit->elements.erase(currentCircuit->elements.begin() + i);
+            }
+        }
+    }
 }
-
-
-
-
-
 
 
 void Controller::addInductor(string n, string n1, string n2, string v)
 {
-    Node* N1 = parseNode(n1);
-    Node* N2 = parseNode(n2);
-    Resistor* adding= new Resistor("inductor", n, N1, N2, parseValue(v));
-    currentCircuit->elements.push_back(adding);
+    long double V = parseValue(v);
+    if(V <= 0)
+        throw ValueException("Inductance cannot be zero or negative");
+    if(isElement("inductor", n))
+        throw ElementException("Inductor " + n + " already exists in the circuit");
+
+    Node *N1 = parseNode(n1);
+//    cout<<N1<<"\n";
+    Node *N2 = parseNode(n2);
+//    cout<<N2<<"\n";
+
+    auto *add = new Resistor("inductor", n, N1, N2, V);
+    currentCircuit->elements.push_back(add);
 }
 
-void Controller::addDiode(string n, string n1, string n2, string v) {
-    Node* N1 = parseNode(n1);
-    Node* N2 = parseNode(n2);
-    Resistor* adding= new Resistor("diode", n, N1, N2, parseValue(v));
-    currentCircuit->elements.push_back(adding);
+void Controller::deleteInductor(const string &n)
+{
+    if (!isElement("Inductor", n))
+    {
+        throw ElementException("Cannot delete inductor; component not found");
+    }
+    else
+    {
+        int i;
+        for (i = 0; i < currentCircuit->elements.size(); ++i)
+        {
+            if (currentCircuit->elements[i]->getType() == "inductor" && currentCircuit->elements[i]->getName() == n)
+            {
+                delete currentCircuit->elements[i];
+                currentCircuit->elements.erase(currentCircuit->elements.begin() + i);
+            }
+        }
+    }
 }
 
+void Controller::showNodes()
+{
+    cout<<"Available nodes:"<<endl;
+    if (currentCircuit->nodes.empty())
+    {
+        cout<<"nodes empty"<<endl;
+    }
+    else
+    {
+        for(auto x : currentCircuit->nodes)
+            cout<< x->name<<", ";
+        cout<<endl;
 
-
-
+    }
+}
 
 
 long double Controller::parseValue(const std::string& input) {
@@ -184,11 +315,12 @@ Node *Controller::parseNode(const string& n, bool jf)
     {
         if( n == x->name)
             return x;
-        else if (!jf)
-        {
-            Node* N = new Node;
-            return N;
-        }
+    }
+    if (!jf)
+    {
+        Node* N = new Node(n);
+        currentCircuit->nodes.push_back(N);
+        return N;
     }
     return nullptr;
 }
@@ -203,15 +335,16 @@ Node *Controller::parseNode(const string& n, bool jf)
 
 
 
-Controller::~Controller()
-{
-    for(auto x : currentCircuit->elements)
-        delete[] x;
 
-    for (auto x : currentCircuit->nodes)
-        delete[] x;
-//    cout<<currentCircuit;
-    delete currentCircuit;
+
+bool Controller::isElement(const string &t, const string &n)
+{
+    for (auto x : currentCircuit->elements)
+    {
+        if(x->getType() == t && x->getName() == n)
+            return true;
+    }
+    return false;
 }
 
 Element *Controller::findElement(const string& t, const string& n)
@@ -226,4 +359,20 @@ Element *Controller::findElement(const string& t, const string& n)
     return nullptr;
 }
 
+
+
 //            cout<<match[1]<<"===="<< match[2]<<"====="<< match[3]<<"====="<< match[4]<<endl;
+Controller::~Controller()
+{
+    for(auto x : currentCircuit->elements)
+        delete x;
+
+    for (auto x : currentCircuit->nodes)
+        delete x;
+//    cout<<currentCircuit;
+    delete &currentCircuit;
+}
+
+
+
+

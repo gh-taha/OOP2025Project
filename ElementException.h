@@ -11,10 +11,19 @@
 class CircuitException;
 
 class ElementException : public CircuitException{
-
-
+public:
+    explicit ElementException(const std::string& msg)
+            : CircuitException("Element error: " + msg) {}
 
 };
 
 
+class ValueException : public ElementException{
+public:
+    explicit ValueException(const string& m) : ElementException(m){}
+
+};
+
 #endif //OOP2025PROJECT_ELEMENTEXCEPTION_H
+
+

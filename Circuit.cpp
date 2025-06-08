@@ -6,7 +6,7 @@
 #include "header.h"
 
 
-Circuit::Circuit(string n)
+Circuit::Circuit(const string& n)
 {
     name = n;
     ID = circuitID++;

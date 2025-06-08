@@ -3,3 +3,10 @@
 //
 
 #include "Node.h"
+
+Node::Node(const string &n) {
+    name = n;
+
+}
+
+

@@ -16,4 +16,11 @@ add_executable(OOP2025Project
         Circuit.cpp
         Controller.h
         Controller.cpp
+
+
+        CircuitException.h
+        CircuitException.cpp
+
+        ElementException.h
+        ElementException.cpp
 )

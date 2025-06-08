@@ -19,7 +19,7 @@ public:
     unsigned ID;
     std::vector<Node*> nodes;
     std::vector<Element*> elements;
-    Circuit(string n = "temp");
+    Circuit(const string& n = "temp");
 
 
     static unsigned circuitID;
