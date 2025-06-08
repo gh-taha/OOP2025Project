@@ -5,12 +5,16 @@
 #ifndef PROJECTCODE_NODE_H
 #define PROJECTCODE_NODE_H
 #include "header.h"
+class Element;
 
 class Node{
 
 private:
-//    vector<Element*> N1s;
-//    vector<Element*> N2s;
+
+    std::string name;
+
+    vector<Element*> N1s;
+    vector<Element*> N2s;
 
     unsigned ID;
 
@@ -19,7 +23,10 @@ public:
 
     static unsigned int nodeID;
 
-    std::string name;
+    void setElement(Element* e, bool pn);
+
+    string getName();
+
 };
 
 

@@ -23,10 +23,14 @@ public:
     void addCapacitor(const string& n, const string& n1, const string& n2, const string& v);
     void deleteCapacitor(const string& n);
 
-    void addInductor(string n, string n1, string n2, string v);
+    void addInductor(const string& n, const string& n1, const string& n2, const string& v);
     void deleteInductor(const string& n);
 
+    void addVoltageSource(const string& n, const string& n1, const string& n2, const string& v);
+    void deleteVoltageSource(const string& n);
 
+    void addCurrentSource(const string& n, const string& n1, const string& n2, const string& v);
+    void deleteCurrentSource(const string& n);
 
     void showNodes();
 
@@ -37,6 +41,9 @@ public:
     Node* parseNode(const string& n, bool jf = false);
 
     long double parseValue(const std::string& input);
+
+
+    static void setElementAtNodes(Element* e, Node* n1, Node* n2);
 
 
 

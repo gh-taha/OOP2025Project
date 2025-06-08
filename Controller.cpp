@@ -5,6 +5,10 @@
 #include "header.h"
 #include "Controller.h"
 #include "Resistor.h"
+#include "Capacitor.h"
+#include "Inductor.h"
+#include "VoltageSource.h"
+#include "CurrentSource.h"
 #include "ElementException.h"
 
 Controller::Controller()
@@ -18,13 +22,13 @@ void Controller::commandRun()
 {
 
     //==========add_patterns==========
-    regex addResistor_pattern(R"(^\s*add\s+R([A-Za-z0-9_]+)\s+([A-Za-z0-9_]+)\s+([A-Za-z0-9_]+)\s+([+-]?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?[a-zA-Z]*)\s*$)");
-    regex addCapacitor_pattern(R"(^\s*add\s+C([A-Za-z0-9_]+)\s+([A-Za-z0-9_]+)\s+([A-Za-z0-9_]+)\s+([+-]?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?[a-zA-Z]*)\s*$)");
-    regex addInductor_pattern(R"(^\s*add\s+L([A-Za-z0-9_]+)\s+([A-Za-z0-9_]+)\s+([A-Za-z0-9_]+)\s+([+-]?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?[a-zA-Z]*)\s*$)");
-    regex addDiode_pattern(R"(^\s*add\s+D([A-Za-z0-9_]+)\s+([A-Za-z0-9_]+)\s+([A-Za-z0-9_]+)\s+([A-Za-z0-9_]+)\s*$)");
-    regex addGND_pattern(R"(^\s*add\s+GND\s+([A-Za-z0-9_]+)\s*$)");
-    regex addVoltageSource_pattern(R"(^\s*add\s+VoltageSource([A-Za-z0-9_]+)\s+([A-Za-z0-9_]+)\s+([A-Za-z0-9_]+)\s+([+-]?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?[a-zA-Z]*)\s*$)");
-    regex addCurrentSource_pattern(R"(^\s*add\s+CurrentSource([A-Za-z0-9_]+)\s+([A-Za-z0-9_]+)\s+([A-Za-z0-9_]+)\s+([+-]?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?[a-zA-Z]*)\s*$)");
+    regex addResistor_pattern(R"(^\s*add\s+R([A-Za-z0-9_]+)\s+N([A-Za-z0-9_]+)\s+N([A-Za-z0-9_]+)\s+([+-]?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?[a-zA-Z]*)\s*$)");
+    regex addCapacitor_pattern(R"(^\s*add\s+C([A-Za-z0-9_]+)\s+N([A-Za-z0-9_]+)\s+N([A-Za-z0-9_]+)\s+([+-]?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?[a-zA-Z]*)\s*$)");
+    regex addInductor_pattern(R"(^\s*add\s+L([A-Za-z0-9_]+)\s+N([A-Za-z0-9_]+)\s+N([A-Za-z0-9_]+)\s+([+-]?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?[a-zA-Z]*)\s*$)");
+    regex addDiode_pattern(R"(^\s*add\s+D([A-Za-z0-9_]+)\s+N([A-Za-z0-9_]+)\s+N([A-Za-z0-9_]+)\s+([A-Za-z0-9_]+)\s*$)");
+    regex addGND_pattern(R"(^\s*add\s+GND\s+N([A-Za-z0-9_]+)\s*$)");
+    regex addVoltageSource_pattern(R"(^\s*add\s+VoltageSource([A-Za-z0-9_]+)\s+N([A-Za-z0-9_]+)\s+N([A-Za-z0-9_]+)\s+([+-]?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?[a-zA-Z]*)\s*$)");
+    regex addCurrentSource_pattern(R"(^\s*add\s+CurrentSource([A-Za-z0-9_]+)\s+N([A-Za-z0-9_]+)\s+N([A-Za-z0-9_]+)\s+([+-]?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?[a-zA-Z]*)\s*$)");
     regex addSinusoidalVoltageSource_pattern
             (
                     "^\\s*add\\s+V([A-Za-z0-9_]+)\\s+"
@@ -50,6 +54,8 @@ void Controller::commandRun()
     regex deleteResistor_pattern(R"(^\s*delete\s+R([A-Za-z0-9_]+)\s*$)");
     regex deleteCapacitor_pattern(R"(^\s*delete\s+C([A-Za-z0-9_]+)\s*$)");
     regex deleteInductor_pattern (R"(^\s*delete\s+L([A-Za-z0-9_]+)\s*$)");
+    regex deleteVoltageSource_pattern (R"(^\s*delete\s+VoltageSource([A-Za-z0-9_]+)\s*$)");
+    regex deleteCurrentSource_pattern (R"(^\s*delete\s+CurrentSource([A-Za-z0-9_]+)\s*$)");
 
     //========== ==========
     regex showNodes_pattern(R"(^\s*\.nodes\s*$)");
@@ -101,6 +107,28 @@ void Controller::commandRun()
             else if (regex_match(command, match, deleteInductor_pattern))
             {
                 deleteInductor(match[1]);
+            }
+
+            // add voltage source
+            else if (regex_match(command, match, addVoltageSource_pattern))
+            {
+                addVoltageSource(match[1], match[2], match[3], match[4]);
+            }
+            // delete VoltageSource
+            else if (regex_match(command, match, deleteVoltageSource_pattern))
+            {
+                deleteVoltageSource(match[1]);
+            }
+
+            // add Current Source
+            else if (regex_match(command, match, addCurrentSource_pattern))
+            {
+                addCurrentSource(match[1], match[2], match[3], match[4]);
+            }
+            //delete Courrent source
+            else if (regex_match(command, match, deleteCurrentSource_pattern))
+            {
+                deleteCurrentSource( match[1]);
             }
             else if (regex_match(command, match, showNodes_pattern))
             {
@@ -176,7 +204,7 @@ void Controller::addCapacitor(const string& n, const string& n1, const string& n
     long double V = parseValue(v);
     if(V <= 0)
         throw ValueException("Capacitance cannot be zero or negative");
-    if(isElement("resistor", n))
+    if(isElement("capacitor", n))
         throw ElementException("Capacitor " + n + " already exists in the circuit");
 
     Node *N1 = parseNode(n1);
@@ -184,7 +212,7 @@ void Controller::addCapacitor(const string& n, const string& n1, const string& n
     Node *N2 = parseNode(n2);
 //    cout<<N2<<"\n";
 
-    auto *add = new Resistor("capacitor", n, N1, N2, V);
+    auto *add = new Capacitor("capacitor", n, N1, N2, V);
     currentCircuit->elements.push_back(add);
 
 }
@@ -210,7 +238,7 @@ void Controller::deleteCapacitor(const string& n)
 }
 
 
-void Controller::addInductor(string n, string n1, string n2, string v)
+void Controller::addInductor(const string& n, const string& n1, const string& n2, const string& v)
 {
     long double V = parseValue(v);
     if(V <= 0)
@@ -223,7 +251,7 @@ void Controller::addInductor(string n, string n1, string n2, string v)
     Node *N2 = parseNode(n2);
 //    cout<<N2<<"\n";
 
-    auto *add = new Resistor("inductor", n, N1, N2, V);
+    auto *add = new Inductor("inductor", n, N1, N2, V);
     currentCircuit->elements.push_back(add);
 }
 
@@ -247,6 +275,80 @@ void Controller::deleteInductor(const string &n)
     }
 }
 
+
+void Controller::addVoltageSource(const string &n, const string &n1, const string &n2, const string &v)
+{
+    long double V = parseValue(v);
+
+    if(isElement("VoltageSource", n))
+        throw ElementException("VoltageSource " + n + " already exists in the circuit");
+
+    Node *N1 = parseNode(n1);
+//    cout<<N1<<"\n";
+    Node *N2 = parseNode(n2);
+//    cout<<N2<<"\n";
+
+    auto *add = new VoltageSource("VoltageSource", n, N1, N2, V);
+    currentCircuit->elements.push_back(add);
+}
+
+void Controller::deleteVoltageSource(const string &n)
+{
+    if (!isElement("VoltageSource", n))
+    {
+        throw ElementException("Cannot delete voltage source; component not found");
+    }
+    else
+    {
+        int i;
+        for (i = 0; i < currentCircuit->elements.size(); ++i)
+        {
+            if (currentCircuit->elements[i]->getType() == "VoltageSource" && currentCircuit->elements[i]->getName() == n)
+            {
+                delete currentCircuit->elements[i];
+                currentCircuit->elements.erase(currentCircuit->elements.begin() + i);
+            }
+        }
+    }
+}
+
+void Controller::addCurrentSource(const string &n, const string &n1, const string &n2, const string &v)
+{
+    long double V = parseValue(v);
+   if(isElement("CurrentSource", n))
+        throw ElementException("CurrentSource " + n + " already exists in the circuit");
+
+    Node *N1 = parseNode(n1);
+//    cout<<N1<<"\n";
+    Node *N2 = parseNode(n2);
+//    cout<<N2<<"\n";
+
+    auto *add = new CurrentSource("CurrentSource", n, N1, N2, V);
+    currentCircuit->elements.push_back(add);
+}
+
+void Controller::deleteCurrentSource(const string &n)
+{
+    if (!isElement("CurrentSource", n))
+    {
+        throw ElementException("Cannot delete current source; component not found");
+    }
+    else
+    {
+        int i;
+        for (i = 0; i < currentCircuit->elements.size(); ++i)
+        {
+            if (currentCircuit->elements[i]->getType() == "CurrentSource" && currentCircuit->elements[i]->getName() == n)
+            {
+                delete currentCircuit->elements[i];
+                currentCircuit->elements.erase(currentCircuit->elements.begin() + i);
+            }
+        }
+    }
+}
+
+
+
 void Controller::showNodes()
 {
     cout<<"Available nodes:"<<endl;
@@ -257,7 +359,7 @@ void Controller::showNodes()
     else
     {
         for(auto x : currentCircuit->nodes)
-            cout<< x->name<<", ";
+            cout<< x->getName()<<", ";
         cout<<endl;
 
     }
@@ -313,7 +415,7 @@ Node *Controller::parseNode(const string& n, bool jf)
 {
     for(auto x : currentCircuit->nodes)
     {
-        if( n == x->name)
+        if( n == x->getName())
             return x;
     }
     if (!jf)
@@ -372,6 +474,17 @@ Controller::~Controller()
 //    cout<<currentCircuit;
     delete &currentCircuit;
 }
+
+void Controller::setElementAtNodes(Element *e, Node *n1, Node *n2)
+{
+    n1->setElement(e, true);
+    n2->setElement(e, false);
+}
+
+
+
+
+
 
 
 

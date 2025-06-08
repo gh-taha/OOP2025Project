@@ -5,8 +5,15 @@
 #ifndef OOP2025PROJECT_VOLTAGESOURCE_H
 #define OOP2025PROJECT_VOLTAGESOURCE_H
 
+#include "header.h"
+#include "Element.h"
 
-class VoltageSource {
+class Element;
+
+class VoltageSource : public Element{
+
+public:
+    VoltageSource(std::string t, std::string n, Node *n1, Node *n2, long double v);
 
 };
 
