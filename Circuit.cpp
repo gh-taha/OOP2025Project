@@ -8,7 +8,7 @@
 
 Circuit::Circuit(const string& n)
 {
-    name = n;
+    name = "circuit" + static_cast<char >(circuitID+ 48);
     ID = circuitID++;
 
 }

@@ -10,16 +10,6 @@ add_executable(OOP2025Project
         Node.cpp
         Element.h
         Element.cpp
-        Resistor.h
-        Resistor.cpp
-        Capacitor.h
-        Capacitor.cpp
-        Inductor.h
-        Inductor.cpp
-        VoltageSource.h
-        VoltageSource.cpp
-        CurrentSource.h
-        CurrentSource.cpp
         Circuit.h
         Circuit.cpp
         Controller.h
