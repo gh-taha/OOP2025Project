@@ -461,13 +461,15 @@ void Controller::addElement(const string &tan, const string &n1, const string &n
         long double V = parseValue(v);
         if(V <= 0)
             throw ValueException("Resistance cannot be zero or negative");
-        if(isElement(t, n))
+        if(currentCircuit->isElement(t, n))
             throw ElementException("Resistor " + n + " already exists in the circuit");
 
 
         auto *add = new Resistor(t, n, N1, N2, V);
         currentCircuit->elements.push_back(add);
         setElementAtNodes(add,N1,N2);
+
+        cout<<"Resistor "<<n<<" added successfully"<<endl;
 
     }
     // C
@@ -478,13 +480,16 @@ void Controller::addElement(const string &tan, const string &n1, const string &n
         long double V = parseValue(v);
         if(V <= 0)
             throw ValueException("Capacitance cannot be zero or negative");
-        if(isElement(t, n))
+        if(currentCircuit->isElement(t, n))
             throw ElementException("Capacitor " + n + " already exists in the circuit");
 
 
         auto *add = new Capacitor(t, n, N1, N2, V);
         currentCircuit->elements.push_back(add);
         setElementAtNodes(add,N1,N2);
+
+        cout<<"Capacitor "<<n<<" added successfully"<<endl;
+
     }
     // I
     else if(regex_match(tan, m, addI_pattern))
@@ -494,13 +499,16 @@ void Controller::addElement(const string &tan, const string &n1, const string &n
         long double V = parseValue(v);
         if(V <= 0)
             throw ValueException("Inductance cannot be zero or negative");
-        if(isElement(t, n))
+        if(currentCircuit->isElement(t, n))
             throw ElementException("Inductor " + n + " already exists in the circuit");
 
 
         auto *add = new Inductor(t, n, N1, N2, V);
         currentCircuit->elements.push_back(add);
         setElementAtNodes(add,N1,N2);
+
+        cout<<"Inductor "<<n<<" added successfully"<<endl;
+
     }
     // VS
     else if(regex_match(tan, m, addVS_pattern))
@@ -509,13 +517,17 @@ void Controller::addElement(const string &tan, const string &n1, const string &n
         string t = "VoltageSource";
         long double V = parseValue(v);
 
-        if(isElement(t, n))
+        if(currentCircuit->isElement(t, n))
             throw ElementException("VoltageSource " + n + " already exists in the circuit");
 
 
         auto *add = new VoltageSource(t, n, N1, N2, V);
         currentCircuit->elements.push_back(add);
         setElementAtNodes(add,N1,N2);
+
+        cout<<"VoltageSource "<<n<<" added successfully"<<endl;
+
+
     }
     // CS
     else if (regex_match(tan, m, addCS_pattern))
@@ -524,13 +536,16 @@ void Controller::addElement(const string &tan, const string &n1, const string &n
         string t = "CurrentSource";
         long double V = parseValue(v);
 
-        if(isElement(t, n))
+        if(currentCircuit->isElement(t, n))
             throw ElementException("CurrentSource " + n + " already exists in the circuit");
 
 
         auto *add = new CurrentSource(t, n, N1, N2, V);
         currentCircuit->elements.push_back(add);
         setElementAtNodes(add,N1,N2);
+
+        cout<<"CurrentSource "<<n<<" added successfully"<<endl;
+
     }
     else
     {

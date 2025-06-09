@@ -20,8 +20,8 @@ public:
     std::vector<Node*> nodes;
     std::vector<Element*> elements;
 
-    vector<Element*> getElements();
-    vector<Node*> getNodes();
+    vector<Element*> getElements() const;
+    vector<Node*> getNodes() const;
     Circuit(const string& n = "temp");
     bool isElement(const string& t, const string& n);
 

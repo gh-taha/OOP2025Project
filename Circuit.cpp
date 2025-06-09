@@ -34,10 +34,10 @@ bool Circuit::isElement(const string &t, const string &n)
     return false;
 }
 
-vector<Element *> Circuit::getElements() {
+vector<Element *> Circuit::getElements() const {
     return elements;
 }
 
-vector<Node *> Circuit::getNodes() {
+vector<Node *> Circuit::getNodes() const {
     return nodes;
 }

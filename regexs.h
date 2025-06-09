@@ -9,7 +9,7 @@
 
 //==========add_patterns==========
 
-regex addSimple_pattern(R"(^\s*add\s+([A-Za-z0-9_]+)\s+N([A-Za-z0-9_]+)\s+N([A-Za-z0-9_]+)\s+([+-]?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)\s*$)");
+regex addSimple_pattern(R"(^\s*add\s+([A-Za-z0-9_]+)\s+N([A-Za-z0-9_]+)\s+N([A-Za-z0-9_]+)\s+([+-]?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?[a-zA-Z]*)\s*$)");
 
 regex addR_pattern("^R([A-Za-z0-9_]+)$");
 regex addC_pattern("^C([A-Za-z0-9_]+)$");
