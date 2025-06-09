@@ -24,10 +24,25 @@ void Controller::commandRun()
 
         getline(cin, command);
 
+        smatch match;
+
         try
         {
+            // add Element
+            if(regex_match(command, match, addSimple_pattern))
+            {
+                addElement(match[1], match[2], match[3], match[4]);
+            }
+
+
+
+
+
+
+
+
             // add resistor
-            if (regex_match(command, match, addResistor_pattern))
+            else if (regex_match(command, match, addResistor_pattern))
             {
                 addResistor(match[1], match[2], match[3], match[4]);
             }
@@ -97,14 +112,15 @@ void Controller::commandRun()
                 cout << "syntax error\n"<<command<<endl;
             }
         }
-        catch (const ElementException& e)
-        {
-            cerr << e.what()<<endl;
-        }
         catch (ValueException& e)
         {
             cerr << e.what()<<endl;
         }
+        catch (const ElementException& e)
+        {
+            cerr << e.what()<<endl;
+        }
+
     }
 
 }
@@ -399,7 +415,7 @@ bool Controller::isElement(const string &t, const string &n)
     return false;
 }
 
-Element *Controller::findElement(const string& t, const string& n)
+Element *Controller::findElement(const string& t, const string& n) const
 {
     for (auto x : currentCircuit->elements)
     {
@@ -429,6 +445,98 @@ void Controller::setElementAtNodes(Element *e, Node *n1, Node *n2)
 {
     n1->setElement(e, true);
     n2->setElement(e, false);
+}
+
+void Controller::addElement(const string &tan, const string &n1, const string &n2, const string& v)
+{
+    smatch m;
+
+    Node *N1 = parseNode(n1);
+    Node *N2 = parseNode(n2);
+    // R
+    if (regex_match(tan, m, addR_pattern))
+    {
+        string n = m[1];
+        string t = "R";
+        long double V = parseValue(v);
+        if(V <= 0)
+            throw ValueException("Resistance cannot be zero or negative");
+        if(isElement(t, n))
+            throw ElementException("Resistor " + n + " already exists in the circuit");
+
+
+        auto *add = new Resistor(t, n, N1, N2, V);
+        currentCircuit->elements.push_back(add);
+        setElementAtNodes(add,N1,N2);
+
+    }
+    // C
+    else if (regex_match(tan,m, addC_pattern))
+    {
+        string n = m[1];
+        string t = "C";
+        long double V = parseValue(v);
+        if(V <= 0)
+            throw ValueException("Capacitance cannot be zero or negative");
+        if(isElement(t, n))
+            throw ElementException("Capacitor " + n + " already exists in the circuit");
+
+
+        auto *add = new Capacitor(t, n, N1, N2, V);
+        currentCircuit->elements.push_back(add);
+        setElementAtNodes(add,N1,N2);
+    }
+    // I
+    else if(regex_match(tan, m, addI_pattern))
+    {
+        string n = m[1];
+        string t = "I";
+        long double V = parseValue(v);
+        if(V <= 0)
+            throw ValueException("Inductance cannot be zero or negative");
+        if(isElement(t, n))
+            throw ElementException("Inductor " + n + " already exists in the circuit");
+
+
+        auto *add = new Inductor(t, n, N1, N2, V);
+        currentCircuit->elements.push_back(add);
+        setElementAtNodes(add,N1,N2);
+    }
+    // VS
+    else if(regex_match(tan, m, addVS_pattern))
+    {
+        string n = m[1];
+        string t = "VoltageSource";
+        long double V = parseValue(v);
+
+        if(isElement(t, n))
+            throw ElementException("VoltageSource " + n + " already exists in the circuit");
+
+
+        auto *add = new VoltageSource(t, n, N1, N2, V);
+        currentCircuit->elements.push_back(add);
+        setElementAtNodes(add,N1,N2);
+    }
+    // CS
+    else if (regex_match(tan, m, addCS_pattern))
+    {
+        string n = m[1];
+        string t = "CurrentSource";
+        long double V = parseValue(v);
+
+        if(isElement(t, n))
+            throw ElementException("CurrentSource " + n + " already exists in the circuit");
+
+
+        auto *add = new CurrentSource(t, n, N1, N2, V);
+        currentCircuit->elements.push_back(add);
+        setElementAtNodes(add,N1,N2);
+    }
+    else
+    {
+        cerr<<"Error: Element "<<tan<<" not found in library"<<endl;
+    }
+
 }
 
 

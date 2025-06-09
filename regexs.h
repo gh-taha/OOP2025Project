@@ -8,6 +8,18 @@
 #include "header.h"
 
 //==========add_patterns==========
+
+regex addSimple_pattern(R"(^\s*add\s+([A-Za-z0-9_]+)\s+N([A-Za-z0-9_]+)\s+N([A-Za-z0-9_]+)\s+([+-]?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)\s*$)");
+
+regex addR_pattern("^R([A-Za-z0-9_]+)$");
+regex addC_pattern("^C([A-Za-z0-9_]+)$");
+regex addI_pattern("^I([A-Za-z0-9_]+)$");
+regex addVS_pattern("^VoltageSource([A-Za-z0-9_]+)$");
+regex addCS_pattern("^CurrentSource([A-Za-z0-9_]+)$");
+
+
+
+
 regex addResistor_pattern(R"(^\s*add\s+R([A-Za-z0-9_]+)\s+N([A-Za-z0-9_]+)\s+N([A-Za-z0-9_]+)\s+([+-]?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?[a-zA-Z]*)\s*$)");
 regex addCapacitor_pattern(R"(^\s*add\s+C([A-Za-z0-9_]+)\s+N([A-Za-z0-9_]+)\s+N([A-Za-z0-9_]+)\s+([+-]?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?[a-zA-Z]*)\s*$)");
 regex addInductor_pattern(R"(^\s*add\s+L([A-Za-z0-9_]+)\s+N([A-Za-z0-9_]+)\s+N([A-Za-z0-9_]+)\s+([+-]?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?[a-zA-Z]*)\s*$)");
@@ -51,7 +63,6 @@ regex showNodes_pattern(R"(^\s*\.nodes\s*$)");
 regex exit_pattern("^\\s*exit\\s*$");
 
 
-smatch match;
 
 
 #endif //OOP2025PROJECT_REGEXS_H

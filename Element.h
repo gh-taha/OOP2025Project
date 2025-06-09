@@ -22,6 +22,8 @@ protected:
 public:
     Element(std::string t, std::string n, Node *n1, Node *n2, long double v);
 
+    static Element* addElement(const string& t, const string& n, Node* n1, Node* n2, long double v);
+
     string getName();
     string getType();
 

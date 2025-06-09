@@ -8,7 +8,8 @@
 
 Circuit::Circuit(const string& n)
 {
-    name = "circuit" + static_cast<char >(circuitID+ 48);
+//    name = "circuit" + static_cast<char >(circuitID+ 48);
+    name = n;
     ID = circuitID++;
 
 }
@@ -25,4 +26,18 @@ Circuit::~Circuit()
         delete[] x;
     }
 
+}
+
+bool Circuit::isElement(const string &t, const string &n)
+{
+
+    return false;
+}
+
+vector<Element *> Circuit::getElements() {
+    return elements;
+}
+
+vector<Node *> Circuit::getNodes() {
+    return nodes;
 }

@@ -28,11 +28,14 @@ string Element::getName()
     return name;
 }
 
-Element::~Element()
-{
-
-
+Element *Element::addElement(const string &t, const string &n, Node *n1, Node *n2, long double v) {
+    return nullptr;
 }
+
+Element::~Element() = default;
+
+
+
 
 // ===============Resistor===============
 

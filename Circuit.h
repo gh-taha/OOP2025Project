@@ -12,14 +12,18 @@ class Node;
 
 class Circuit {
 protected:
+    std::string name;
+    unsigned ID;
 
 
 public:
-    std::string name;
-    unsigned ID;
     std::vector<Node*> nodes;
     std::vector<Element*> elements;
+
+    vector<Element*> getElements();
+    vector<Node*> getNodes();
     Circuit(const string& n = "temp");
+    bool isElement(const string& t, const string& n);
 
 
     static unsigned circuitID;

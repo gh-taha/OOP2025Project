@@ -17,6 +17,8 @@ public:
 
     void commandRun();
 
+    void addElement(const string& tan, const string &n1, const string &n2, const string& v);
+
     void addResistor(const string& n, const string& n1, const string& n2, const string& v);
     void deleteResistor(const string& n);
 
@@ -35,12 +37,12 @@ public:
     void showNodes();
 
     bool isElement(const string& t, const string& n);
-    Element* findElement(const string& t, const string& n);
+    Element* findElement(const string& t, const string& n) const;
 
 
     Node* parseNode(const string& n, bool jf = false);
 
-    long double parseValue(const std::string& input);
+    static long double parseValue(const std::string& input);
 
 
     static void setElementAtNodes(Element* e, Node* n1, Node* n2);
